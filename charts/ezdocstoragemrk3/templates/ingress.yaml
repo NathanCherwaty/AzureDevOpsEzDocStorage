@@ -2,11 +2,9 @@
 {{- $fullName := include "ezdocstoragemrk3.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 {{- $ingressPath := .Values.ingress.path -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion:apps/v1
-{{- else -}}
-apiVersion: extensions/v1
-{{- end }}
+
+apiVersion:networking.k8s.io/v1
+
 kind: Ingress
 metadata:
   name: {{ $fullName }}

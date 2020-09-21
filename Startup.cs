@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using EZDocStorage.Models;
 
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
 
 namespace EZDocStorage
 {
@@ -41,6 +43,11 @@ namespace EZDocStorage
                     Title = "EZ Doc Storage API",
                     Description = "A simple document storage using ASP.NET Core Web API"
                 });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 

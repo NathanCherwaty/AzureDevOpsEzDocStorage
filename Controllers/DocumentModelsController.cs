@@ -9,7 +9,7 @@ using EZDocStorage.Models;
 
 namespace EZDocStorage.Controllers
 {
-    [Route("api/DocumentModels")]
+    [Route("api/Documents")]
     [ApiController]
     public class DocumentModelsController : ControllerBase
     {

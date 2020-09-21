@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: ezdocstoragemrk3 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: ezdocstoragemrk3
+  template:
+    metadata:
+      labels:
+        app: ezdocstoragemrk3 
+    spec:
+      containers:
+        - name: ezdocstoragemrk3 
+          image: capstonecr.azurecr.io/ezdocstoragemrk3
+          ports:
+          - containerPort: 80

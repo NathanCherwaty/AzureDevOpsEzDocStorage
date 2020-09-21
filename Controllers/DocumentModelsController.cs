@@ -86,6 +86,9 @@ namespace EZDocStorage.Controllers
             return CreatedAtAction(nameof(GetDocumentModel), new { id = documentModel.Id }, documentModel);
         }
 
+        /// <summary>
+        /// Deletes a specific TodoItem.
+        /// </summary>
         // DELETE: api/DocumentModels/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<DocumentModel>> DeleteDocumentModel(int id)

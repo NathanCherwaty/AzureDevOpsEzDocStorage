@@ -5,6 +5,8 @@
     <UserSecretsId>2d4aa210-f64b-4046-968a-fe8f879b9705</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.1" />
   </ItemGroup>
 
 

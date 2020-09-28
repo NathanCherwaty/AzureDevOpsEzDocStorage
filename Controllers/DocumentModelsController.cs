@@ -19,7 +19,9 @@ namespace EZDocStorage.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Gets all Documents.
+        /// </summary>
         // GET: api/DocumentModels
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentModel>>> GetDocuments()
@@ -27,6 +29,9 @@ namespace EZDocStorage.Controllers
             return await _context.Documents.ToListAsync();
         }
 
+        /// <summary>
+        /// Gets a specific Document.
+        /// </summary>
         // GET: api/DocumentModels/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DocumentModel>> GetDocumentModel(int id)
@@ -41,6 +46,9 @@ namespace EZDocStorage.Controllers
             return documentModel;
         }
 
+        /// <summary>
+        /// Updates a specific Document.
+        /// </summary>
         // PUT: api/DocumentModels/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -73,6 +81,9 @@ namespace EZDocStorage.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Creates a specific Document.
+        /// </summary>
         // POST: api/DocumentModels
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -87,7 +98,7 @@ namespace EZDocStorage.Controllers
         }
 
         /// <summary>
-        /// Deletes a specific TodoItem.
+        /// Deletes a specific Document.
         /// </summary>
         // DELETE: api/DocumentModels/5
         [HttpDelete("{id}")]

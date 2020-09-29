@@ -14,4 +14,11 @@ namespace EZDocStorage.Models
         public DateTime CreationDate { get; set; }
         public string Extention { get; set; }
     }
+
+    public class DocumentModelDTO
+    {
+        public int Id { get; set; }
+
+        public string DocName { get; set; }
+    }
 }

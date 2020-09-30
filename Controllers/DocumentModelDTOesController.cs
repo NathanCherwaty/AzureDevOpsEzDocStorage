@@ -9,36 +9,37 @@ using EZDocStorage.Models;
 
 namespace EZDocStorage.Controllers
 {
-    [Route("api/Documents")]
+    [Route("api/DocumentsDTO")]
     [ApiController]
-    public class DocumentModelsController : ControllerBase
+    public class DocumentModelDTOesController : ControllerBase
     {
         private readonly DocumentContext _context;
 
-        public DocumentModelsController(DocumentContext context)
+        public DocumentModelDTOesController(DocumentContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// Gets all Documents.
+        /// Gets all DocumentsDTO.
         /// </summary>
         // GET: api/DocumentModels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DocumentModel>>> GetDocuments()
+        public async Task<ActionResult<IEnumerable<DocumentModelDTO>>> GetDocumentsDTO()
         {
-            return await _context.Documents.ToListAsync();
+            return await _context.Documents.Select(x => DocumentToDTO(x)).ToListAsync();
+            //return await _context.Documents.ToListAsync();
         }
 
         /// <summary>
-        /// Gets a specific Document.
+        /// Gets a specific DocumentDTO.
         /// </summary>
         /// <param name="id">Id of the Document you are trying to get</param>
         /// <response code="404">Document not found</response> 
         // GET: api/DocumentModels/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DocumentModel>> GetDocumentModel(int id)
+        public async Task<ActionResult<DocumentModelDTO>> GetDocumentModelDTO(int id)
         {
             var documentModel = await _context.Documents.FindAsync(id);
 
@@ -47,11 +48,11 @@ namespace EZDocStorage.Controllers
                 return NotFound();
             }
 
-            return documentModel;
+            return DocumentToDTO(documentModel);
         }
 
         /// <summary>
-        /// Updates a specific Document.
+        /// Updates a specific DocumentDTO.
         /// </summary>
         /// /// <remarks>
         /// Sample request:
@@ -60,14 +61,11 @@ namespace EZDocStorage.Controllers
         ///     {
         ///        "id": 1,
         ///        "docName": "Item1",
-        ///        "btyes": 64,
-        ///        "creationDate": "2000-01-30T14:00:00.000Z",
-        ///        "extention": "string"
         ///     }
         ///
         /// </remarks>
         /// <param name="id">Id of the Document you are trying to update must match in request and exist in database</param>
-        /// <param name="documentModel"></param>
+        /// <param name="documentModelDTO"></param>
         /// <returns>updates a Document</returns>
         /// <response code="204">Returns no content but Document was updated</response>
         /// <response code="400">If the Document is null</response> 
@@ -77,14 +75,22 @@ namespace EZDocStorage.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PutDocumentModel(int id, DocumentModel documentModel)
+        public async Task<IActionResult> PutDocumentModelDTO(int id, DocumentModelDTO documentModelDTO)
         {
-            if (id != documentModel.Id)
+            if (id != documentModelDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(documentModel).State = EntityState.Modified;
+            var document = await _context.Documents.FindAsync(id);
+            if (document == null)
+            {
+                return NotFound();
+            }
+
+            document.DocName = documentModelDTO.DocName;
+
+            //_context.Entry(documentModel).State = EntityState.Modified;
 
             try
             {
@@ -92,7 +98,7 @@ namespace EZDocStorage.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DocumentModelExists(id))
+                if (!DocumentModelDTOExists(id))
                 {
                     return NotFound();
                 }
@@ -106,7 +112,7 @@ namespace EZDocStorage.Controllers
         }
 
         /// <summary>
-        /// Creates a specific Document.
+        /// Creates a specific DocumentDTO.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -115,13 +121,10 @@ namespace EZDocStorage.Controllers
         ///     {
         ///        "id": 1,
         ///        "docName": "Item1",
-        ///        "btyes": 64,
-        ///        "creationDate": "2000-01-30T14:00:00.000Z",
-        ///        "extention": "string"
         ///     }
         ///
         /// </remarks>
-        /// <param name="documentModel"></param>
+        /// <param name="documentModelDTO"></param>
         /// <returns>A newly created Document</returns>
         /// <response code="201">Returns the newly created Document</response>
         /// <response code="400">If the item is null</response>            
@@ -131,40 +134,52 @@ namespace EZDocStorage.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<DocumentModel>> PostDocumentModel(DocumentModel documentModel)
+        public async Task<ActionResult<DocumentModelDTO>> PostDocumentModelDTO(DocumentModelDTO documentModelDTO)
         {
-            _context.Documents.Add(documentModel);
+            var document = new DocumentModel
+            {
+                DocName = documentModelDTO.DocName
+            };
+
+            _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
             //return CreatedAtAction("GetDocumentModel", new { id = documentModel.Id }, documentModel);
-            return CreatedAtAction(nameof(GetDocumentModel), new { id = documentModel.Id }, documentModel);
+            return CreatedAtAction(nameof(GetDocumentModelDTO), new { id = document.Id }, DocumentToDTO(document));
         }
 
         /// <summary>
-        /// Deletes a specific Document.
+        /// Deletes a specific DocumentDTO.
         /// </summary>
         /// <param name="id">Id of the document you wish to delete</param>
         /// <response code="404">Document not found</response>       
         // DELETE: api/DocumentModels/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DocumentModel>> DeleteDocumentModel(int id)
+        public async Task<ActionResult<DocumentModelDTO>> DeleteDocumentModelDTO(int id)
         {
-            var documentModel = await _context.Documents.FindAsync(id);
-            if (documentModel == null)
+            var documentModelDTO = await _context.DocumentModelDTO.FindAsync(id);
+            if (documentModelDTO == null)
             {
                 return NotFound();
             }
 
-            _context.Documents.Remove(documentModel);
+            _context.DocumentModelDTO.Remove(documentModelDTO);
             await _context.SaveChangesAsync();
 
-            return documentModel;
+            return documentModelDTO;
         }
 
-        private bool DocumentModelExists(int id)
+        private bool DocumentModelDTOExists(int id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return _context.DocumentModelDTO.Any(e => e.Id == id);
         }
+
+        private static DocumentModelDTO DocumentToDTO(DocumentModel todoItem) =>
+        new DocumentModelDTO
+        {
+            Id = todoItem.Id,
+            DocName = todoItem.DocName
+        };
     }
 }

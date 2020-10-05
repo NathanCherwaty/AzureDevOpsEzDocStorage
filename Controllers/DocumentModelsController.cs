@@ -23,7 +23,7 @@ namespace EZDocStorage.Controllers
         /// <summary>
         /// Gets all Documents.
         /// </summary>
-        // GET: api/DocumentModels
+        // GET: api/Documents
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DocumentModel>>> GetDocuments()
         {
@@ -62,7 +62,7 @@ namespace EZDocStorage.Controllers
         ///        "docName": "Item1",
         ///        "btyes": 64,
         ///        "creationDate": "2000-01-30T14:00:00.000Z",
-        ///        "extention": "string"
+        ///        "extension": "string"
         ///     }
         ///
         /// </remarks>
@@ -110,29 +110,32 @@ namespace EZDocStorage.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///
-        ///     POST /Documents
-        ///     {
-        ///        "id": 1,
-        ///        "docName": "Item1",
-        ///        "btyes": 64,
-        ///        "creationDate": "2000-01-30T14:00:00.000Z",
-        ///        "extention": "string"
-        ///     }
+        ///   
+        ///     "docName": "Item1",
+        ///     "btyes": "64",
+        ///     "extension": "string"
         ///
         /// </remarks>
-        /// <param name="documentModel"></param>
+        /// <param name="name">*REQUIRED Name of document</param>
+        /// <param name="bytes">*REQUIRED Size in bytes</param>
+        /// <param name="extension">*REQUIRED the extention of the document (pdf, doc, txt)</param>
         /// <returns>A newly created Document</returns>
         /// <response code="201">Returns the newly created Document</response>
-        /// <response code="400">If the item is null</response>            
+        /// <response code="400">If a parameter is null</response>            
         // POST: api/DocumentModels
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<DocumentModel>> PostDocumentModel(DocumentModel documentModel)
+        public async Task<ActionResult<DocumentModel>> PostDocumentModel(string name, string bytes, string extension)
         {
+            if (name == null || bytes == null || extension == null)
+            {
+                return BadRequest("All parameters are required");
+            }
+
+            var documentModel = new DocumentModel(){ DocName = name, Bytes = bytes, Extension = extension, CreationDate = DateTime.Now };
             _context.Documents.Add(documentModel);
             await _context.SaveChangesAsync();
 
